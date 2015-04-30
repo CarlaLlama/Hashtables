@@ -1,4 +1,6 @@
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 /**
  * Module containing utility methods.
@@ -27,6 +29,19 @@ public class FileUtil {
      * A description consists of 1 or more characters (generally, it’s a word phrase). <br>
      */
     public static void load(Dictionary dictionary, String filename) throws FileNotFoundException, IOException { 
-        // Implement this.
+        BufferedReader b = new BufferedReader(new FileReader(filename));
+        String line = null;
+        while((line = b.readLine()) != null){
+        	String[] arrThings = line.split(":");
+        	WordType wordType = WordType.toWordType(arrThings[0].trim());  //match to wordType enum
+        	String word = arrThings[1].trim();
+        	String description = " ";
+        	if(arrThings.length==3){									   //if this word has a definition, then add it, otherwise leave empty string
+        		description = arrThings[2];
+        	}
+        	Definition d = new Definition(wordType, description);		   //make new definition object
+        	dictionary.insert(word, d);									   //insert word into the dictionary
+        }
     }
+    
 }
