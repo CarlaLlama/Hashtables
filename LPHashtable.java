@@ -102,9 +102,6 @@ public class LPHashtable implements Dictionary
     	if(hkey > table.length){						//if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
-    	if(loadFactor()>=0.5){							//in case of table saturation, double the size of the table
-    		table = Arrays.copyOf(table, table.length*2);
-    	}
     	if(table[hkey] == null){						//if position where word would be is null, then word doesn't already exist. Insert here.
     		table[hkey] = new EntryImpl(word, definition);
     		probeCount = 0;
