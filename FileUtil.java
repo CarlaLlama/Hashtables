@@ -41,7 +41,9 @@ public class FileUtil {
         	}
         	Definition d = new Definition(wordType, description);		   //make new definition object
         	dictionary.insert(word, d);									   //insert word into the dictionary
+        	
         }
+        SCHashtable.debug_print((SCHashtable)dictionary);
     }
     
 }

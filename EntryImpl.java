@@ -3,7 +3,7 @@ import java.util.List;
 
 /**
  * Implementation of ADT for Entry.
- * @author Carla
+ * @author Carla Wilby
  * @version 29/04/2015
  */
 
