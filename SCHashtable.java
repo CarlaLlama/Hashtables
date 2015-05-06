@@ -12,6 +12,7 @@ public class SCHashtable implements Dictionary{
     
     private ChainedEntry[] table;
     private int entries;
+    private static int probeInsert;		// for performance testing
  
     public SCHashtable() { this(DEFAULT_SIZE); }
     
@@ -51,9 +52,10 @@ public class SCHashtable implements Dictionary{
     	if(pos == null){						
     		table[hkey] = new SCEntryImpl(word, definition);//if nothing in this position, insert new word
     		entries++;
+    		probeInsert++;	
     	}else{
-
     		while(pos.getNext()!=null){
+    			probeInsert++;
     			if(pos.getWord().equals(word)){					//If word we're looking for exists at this position, add a definition. 
     				pos.addDefinition(definition);
     				return;
@@ -62,6 +64,7 @@ public class SCHashtable implements Dictionary{
     			}
     		}
     		if(pos.getWord().equals(word)){						//Catch check of last word that has a .getNext() of null
+    			probeInsert++;	
 				pos.addDefinition(definition);
 				return;
     		}
@@ -117,6 +120,10 @@ public class SCHashtable implements Dictionary{
     public void empty() { this.table = new SCEntryImpl[this.table.length]; this.entries=0; }
     
     public int size() { return this.entries; }
+    
+    public static int getTotalInsertProbe(){
+    	return probeInsert;
+    }
 
     /* Hash Table Functions */
     

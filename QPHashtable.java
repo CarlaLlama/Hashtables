@@ -12,6 +12,7 @@ public class QPHashtable implements Dictionary{
 	    
     private Entry[] table;
     private int entries;
+    private static int probeInsert;   // for performance testing
  
     public QPHashtable() { this(DEFAULT_SIZE); }
     
@@ -111,13 +112,16 @@ public class QPHashtable implements Dictionary{
     		table[hkey] = new EntryImpl(word, definition);
     		probeCount = 0;
     		entries++;
+    		probeInsert++;
     	}
     	else if(table[hkey].isEntryFor(word) ){			//if the current position is the word we're looking for, add the current definition to the word's definition list.
     		table[hkey].addDefinition(definition);
     		probeCount = 0;
+    		probeInsert++;
     	}
     	else if(!table[hkey].isEntryFor(word)){			//if correct position, but clash has occurred, continue until next available space is found.
     		probeCount++;
+    		probeInsert++;
     		insert(word, definition);
     	}
     }
@@ -127,6 +131,10 @@ public class QPHashtable implements Dictionary{
     public void empty() { this.table = new EntryImpl[this.table.length]; this.entries=0; }
     
     public int size() { return this.entries; }
+    
+    public static int getTotalInsertProbe(){
+    	return probeInsert;
+    }
     
     public int primer(int num){     //silly method to ensure that a number is prime, if it isn't, increment until it is
     	int factor = 0;

@@ -37,7 +37,6 @@ public class UserInterface {
         }
         
         FileUtil.load(dictionary, "lexicon.txt");
-        
         System.out.println("Enter a word (or '#quit'):");
         String word = input.next().toLowerCase();
         while (!word.equals("#quit")) {
@@ -51,6 +50,7 @@ public class UserInterface {
             System.out.println("Enter a word (or '#quit'):");
             word = input.next().toLowerCase();
         }        
+        
         
         
         

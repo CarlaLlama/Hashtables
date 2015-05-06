@@ -43,7 +43,7 @@ public class FileUtil {
         	dictionary.insert(word, d);									   //insert word into the dictionary
         	
         }
-        SCHashtable.debug_print((SCHashtable)dictionary);
+       
     }
     
 }

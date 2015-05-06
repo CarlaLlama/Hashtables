@@ -13,6 +13,7 @@ public class LPHashtable implements Dictionary
     
     private Entry[] table;
     private int entries;
+    private static int probeInsert;		// for performance testing
  
     public LPHashtable() { this(DEFAULT_SIZE); }
     
@@ -105,14 +106,17 @@ public class LPHashtable implements Dictionary
     	if(table[hkey] == null){						//if position where word would be is null, then word doesn't already exist. Insert here.
     		table[hkey] = new EntryImpl(word, definition);
     		probeCount = 0;
+    		probeInsert++;								//counter for performance testing
     		entries++;
     	}
     	else if(table[hkey].isEntryFor(word) ){			//if the current position is the word we're looking for, add the current definition to the word's definition list.
     		table[hkey].addDefinition(definition);
     		probeCount = 0;
+    		probeInsert++;
     	}
     	else if(!table[hkey].isEntryFor(word)){			//if correct position, but clash has occurred, continue until next available space is found.
     		probeCount++;
+    		probeInsert++;
     		insert(word, definition);
     	}
     }
@@ -122,6 +126,10 @@ public class LPHashtable implements Dictionary
     public void empty() { this.table = new EntryImpl[this.table.length]; this.entries=0; }
     
     public int size() { return this.entries; }
+    
+    public static int getTotalInsertProbe(){
+    	return probeInsert;
+    }
     
     /* Hash Table Functions */
     
