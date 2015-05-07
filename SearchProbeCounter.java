@@ -113,7 +113,7 @@ public class SearchProbeCounter {
 	
 	public String percDifference(int a, int b){
 		double perc = (a-b);
-		perc = Math.abs((perc/a)*100.0);
+		perc = Math.abs((perc/a));
 		return String.format("%.5g", perc)+"%";
 	}
 

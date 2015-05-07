@@ -107,20 +107,18 @@ public class LPHashtable implements Dictionary
     	while(hkey >= table.length){						//if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
+		probeInsert++;
     	if(table[hkey] == null){						//if position where word would be is null, then word doesn't already exist. Insert here.
     		table[hkey] = new EntryImpl(word, definition);
     		probeCount = 0;
-    		probeInsert++;								//counter for performance testing
     		entries++;
     	}
     	else if(table[hkey].isEntryFor(word) ){			//if the current position is the word we're looking for, add the current definition to the word's definition list.
     		table[hkey].addDefinition(definition);
     		probeCount = 0;
-    		probeInsert++;
     	}
     	else if(!table[hkey].isEntryFor(word)){			//if correct position, but clash has occurred, continue until next available space is found.
     		probeCount++;
-    		probeInsert++;
     		insert(word, definition);
     	}
     }

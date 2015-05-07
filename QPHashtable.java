@@ -50,7 +50,7 @@ public class QPHashtable implements Dictionary{
      */
     public boolean containsWord(String word) {
     	int hkey = hashFunction(word)+(probeCount*probeCount);//probeCount initially 0, increments in the case of a clash
-    	if(hkey > table.length){				 //if hkey reaches end of table, loop to beginning
+    	while(hkey >= table.length){				 //if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
     	if(probeCount > table.length){			 //if probeCount has checked through entire table, then word cannot exist
