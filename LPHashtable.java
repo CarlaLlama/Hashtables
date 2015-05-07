@@ -13,13 +13,16 @@ public class LPHashtable implements Dictionary
     
     private Entry[] table;
     private int entries;
-    private static int probeInsert;		// for performance testing
- 
+    private int probeInsert = 0;		// for performance testing
+    private int searchProbe = 0;     // for search probe testing
+    
     public LPHashtable() { this(DEFAULT_SIZE); }
     
     public LPHashtable(int size) { 
         this.table = new EntryImpl[size+1];
         this.entries = 0;        
+        probeInsert = 0;
+        searchProbe = 0;
     }
     
     /**
@@ -48,7 +51,7 @@ public class LPHashtable implements Dictionary
      */
     public boolean containsWord(String word) {
     	int hkey = hashFunction(word)+probeCount;//probeCount initially 0, increments in the case of a clash
-    	if(hkey > table.length){				 //if hkey reaches end of table, loop to beginning
+    	while(hkey >= table.length){				 //if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
     	if(probeCount > table.length){			 //if probeCount has checked through entire table, then word cannot exist
@@ -75,7 +78,7 @@ public class LPHashtable implements Dictionary
      */
     public List<Definition> getDefinitions(String word) {
     	int hkey = hashFunction(word)+probeCount;   //probeCount initially 0, increments in the case of a clash
-    	if(hkey > table.length){					//if hkey reaches end of table, loop to beginning
+    	while(hkey >= table.length){					//if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
     	if(probeCount > table.length){              //if probeCount has checked through entire table, then word cannot exist
@@ -90,6 +93,7 @@ public class LPHashtable implements Dictionary
     	}
     	else{										//if correct position, but word isn't there, execute recursive linear probe until found.
     		probeCount++;
+    		searchProbe++;
     		return getDefinitions(word);
     	}
     }
@@ -100,7 +104,7 @@ public class LPHashtable implements Dictionary
      */
     public void insert(String word, Definition definition) {       	
     	int hkey = hashFunction(word)+probeCount;		//probeCount initially 0, increments in the case of a clash until next available space is found
-    	if(hkey > table.length){						//if hkey reaches end of table, loop to beginning
+    	while(hkey >= table.length){						//if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
     	if(table[hkey] == null){						//if position where word would be is null, then word doesn't already exist. Insert here.
@@ -127,8 +131,12 @@ public class LPHashtable implements Dictionary
     
     public int size() { return this.entries; }
     
-    public static int getTotalInsertProbe(){
+    public int getTotalInsertProbe(){
     	return probeInsert;
+    }
+    
+    public int getTotalSearchProbe(){
+    	return searchProbe;
     }
     
     /* Hash Table Functions */

@@ -12,13 +12,16 @@ public class QPHashtable implements Dictionary{
 	    
     private Entry[] table;
     private int entries;
-    private static int probeInsert;   // for performance testing
- 
+    private int probeInsert = 0;   // for performance testing
+    private int searchProbe = 0;   // for search performance testing
+    
     public QPHashtable() { this(DEFAULT_SIZE); }
     
     public QPHashtable(int size) { 
         this.table = new EntryImpl[primer(size+1)];
-        this.entries = 0;        
+        this.entries = 0; 
+        probeInsert = 0;
+        searchProbe = 0;
     }
     
     /**
@@ -74,21 +77,24 @@ public class QPHashtable implements Dictionary{
      */
     public List<Definition> getDefinitions(String word) {
     	int hkey = hashFunction(word)+(probeCount*probeCount);   //probeCount initially 0, increments in the case of a clash
-    	if(hkey > table.length){					//if hkey reaches end of table, loop to beginning
+    	while(hkey >= table.length){					//if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
     	if(probeCount > table.length){              //if probeCount has checked through entire table, then word cannot exist
     		return null;
     	}
     	if(table[hkey] == null){					//if position where word would be is null, then word cannot exist
+    		searchProbe++;
     		return null;
     	}
     	else if(table[hkey].isEntryFor(word)){		//if correct position, and word exists in that position, then match, return definitions list
+    		searchProbe++;
     		probeCount = 0;
     		return table[hkey].getDefinitions();
     	}
     	else{										//if correct position, but word isn't there, execute recursive quadratic probe until found.
     		probeCount++;
+    		searchProbe++;
     		return getDefinitions(word);
     	}
     }
@@ -99,7 +105,7 @@ public class QPHashtable implements Dictionary{
      */
     public void insert(String word, Definition definition) {       	
     	int hkey = hashFunction(word)+(probeCount*probeCount);		//probeCount initially 0, increments quadratically in the case of a clash until next available space is found
-    	if(hkey > table.length){						//if hkey reaches end of table, loop to beginning
+    	while(hkey > table.length){						//if hkey reaches end of table, loop to beginning
     		hkey -= table.length;
     	}
     	if(probeCount > table.length){              //if probeCount has checked through entire table, then word cannot exist
@@ -132,8 +138,12 @@ public class QPHashtable implements Dictionary{
     
     public int size() { return this.entries; }
     
-    public static int getTotalInsertProbe(){
+    public int getTotalInsertProbe(){
     	return probeInsert;
+    }
+    
+    public int getTotalSearchProbe(){
+    	return searchProbe;
     }
     
     public int primer(int num){     //silly method to ensure that a number is prime, if it isn't, increment until it is

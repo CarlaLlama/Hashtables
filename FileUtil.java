@@ -28,9 +28,13 @@ public class FileUtil {
      * A word consists of a sequence of one or more letters. <br>
      * A description consists of 1 or more characters (generally, it’s a word phrase). <br>
      */
+    private static String[] tempWords = new String[4997];             						//for search probing
+    
     public static void load(Dictionary dictionary, String filename) throws FileNotFoundException, IOException { 
         BufferedReader b = new BufferedReader(new FileReader(filename));
         String line = null;
+
+        int cnt = 0;
         while((line = b.readLine()) != null){
         	String[] arrThings = line.split(":");
         	WordType wordType = WordType.toWordType(arrThings[0].trim());  //match to wordType enum
@@ -41,9 +45,12 @@ public class FileUtil {
         	}
         	Definition d = new Definition(wordType, description);		   //make new definition object
         	dictionary.insert(word, d);									   //insert word into the dictionary
-        	
+        	tempWords[cnt] = word;
+        	cnt++;
         }
-       
     }
     
+    public static String[] getWordArr(){
+    	return tempWords;
+    }
 }
